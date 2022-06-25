@@ -19,11 +19,20 @@ CSG generate(){
 	def priceValue = measurments.price
 	def sourceValue = measurments.source
 	def upperDiameterMMValue = measurments.upperDiameterMM
+	def lowerHeightMMValue = measurments.lowerHeightMM
+	def upperHeightMMValue = measurments.upperHeightMM
 	for(String key:measurments.keySet().stream().sorted().collect(Collectors.toList())){
 		println "socket value "+key+" "+measurments.get(key);
 }
 	// Stub of a CAD object
-	CSG part = new Cube().toCSG()
+	def lowerRadiusMM = lowerDiameterMMValue/2
+	def upperRadiusMM = upperDiameterMMValue/2
+	def cylinderRes = 16
+	CSG lowerCylinder = new Cylinder(lowerRadiusMM, lowerRadiusMM, lowerHeightMMValue, cylinderRes).toCSG()
+	CSG upperCylinder = new Cylinder(upperRadiusMM, upperRadiusMM, upperHeightMMValue, cylinderRes).toCSG()
+	// put the upper cylinder on top of the lower one
+	upperCylinder = upperCylinder.movez(lowerCylinder.getMaxZ() - upperCylinder.getMinZ())
+	def part = upperCylinder.union(lowerCylinder)
 	return part
 		.setParameter(size)
 		.setRegenerate({generate()})

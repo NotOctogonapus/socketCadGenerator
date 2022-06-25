@@ -22,10 +22,7 @@ CSG generate(){
 	def lowerHeightMMValue = measurments.lowerHeightMM
 	def upperHeightMMValue = measurments.upperHeightMM
 	def cylinderRes = new LengthParameter("Cylinder Resolution", 16, [128.0, 3.0])
-	for(String key:measurments.keySet().stream().sorted().collect(Collectors.toList())){
-		println "socket value "+key+" "+measurments.get(key);
-}
-	// Stub of a CAD object
+
 	def lowerRadiusMM = lowerDiameterMMValue/2
 	def upperRadiusMM = upperDiameterMMValue/2
 	CSG lowerCylinder = new Cylinder(lowerRadiusMM, lowerRadiusMM, lowerHeightMMValue, (int)cylinderRes.getMM()).toCSG()

@@ -21,20 +21,21 @@ CSG generate(){
 	def upperDiameterMMValue = measurments.upperDiameterMM
 	def lowerHeightMMValue = measurments.lowerHeightMM
 	def upperHeightMMValue = measurments.upperHeightMM
+	def cylinderRes = new LengthParameter("Cylinder Resolution", 16, [128.0, 3.0])
 	for(String key:measurments.keySet().stream().sorted().collect(Collectors.toList())){
 		println "socket value "+key+" "+measurments.get(key);
 }
 	// Stub of a CAD object
 	def lowerRadiusMM = lowerDiameterMMValue/2
 	def upperRadiusMM = upperDiameterMMValue/2
-	def cylinderRes = 16
-	CSG lowerCylinder = new Cylinder(lowerRadiusMM, lowerRadiusMM, lowerHeightMMValue, cylinderRes).toCSG()
-	CSG upperCylinder = new Cylinder(upperRadiusMM, upperRadiusMM, upperHeightMMValue, cylinderRes).toCSG()
+	CSG lowerCylinder = new Cylinder(lowerRadiusMM, lowerRadiusMM, lowerHeightMMValue, (int)cylinderRes.getMM()).toCSG()
+	CSG upperCylinder = new Cylinder(upperRadiusMM, upperRadiusMM, upperHeightMMValue, (int)cylinderRes.getMM()).toCSG()
 	// put the upper cylinder on top of the lower one
 	upperCylinder = upperCylinder.movez(lowerCylinder.getMaxZ() - upperCylinder.getMinZ())
 	def part = upperCylinder.union(lowerCylinder)
 	return part
 		.setParameter(size)
+		.setParameter(cylinderRes)
 		.setRegenerate({generate()})
 }
 return generate() 
